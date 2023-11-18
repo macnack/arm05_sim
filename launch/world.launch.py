@@ -14,8 +14,10 @@ import numpy as np
 def generate_launch_description():
     os.environ['TURTLEBOT3_MODEL'] = 'waffle'
     os.environ['GAZEBO_MODEL_PATH'] = '/arm_ws/src/arm05_sim/models'
-    launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_gazebo'), 'launch')
-    nav2_launch_file_dir = os.path.join(get_package_share_directory('turtlebot3_navigation2'), 'launch')
+    launch_file_dir = os.path.join(
+        get_package_share_directory('turtlebot3_gazebo'), 'launch')
+    nav2_launch_file_dir = os.path.join(
+        get_package_share_directory('turtlebot3_navigation2'), 'launch')
     print(nav2_launch_file_dir)
     pkg_gazebo_ros = get_package_share_directory('gazebo_ros')
 
@@ -79,7 +81,21 @@ def generate_launch_description():
     spawn_aruco_cubes = LaunchNode(
         namespace="spawn_cubes", package="arm05_sim", executable="spawn_aruco.py", output="screen", arguments=['--seed', aruco_seed]
     )
-
+    aruco_params = os.path.join(
+        get_package_share_directory('arm05_sim'),
+        'config',
+        'aruco_parameters.yaml'
+    )
+    aruco_node = LaunchNode(
+        package='ros2_aruco',
+        executable='aruco_node',
+        parameters=[aruco_params]
+    )
+    turtlebot_bt = LaunchNode(
+        package='turtlebot3_bt',
+        executable='run_bt.py',
+        output='screen'
+    )
     ld = LaunchDescription()
 
     # Add the commands to the launch description
@@ -90,6 +106,7 @@ def generate_launch_description():
     ld.add_action(spawn_aruco_cubes)
     ld.add_action(spawn_turtlebot_cmd)
     ld.add_action(navigation_cmd)
-    
+    ld.add_action(aruco_node)
+    ld.add_action(turtlebot_bt)
 
     return ld
