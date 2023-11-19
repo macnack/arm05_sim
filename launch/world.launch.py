@@ -96,6 +96,11 @@ def generate_launch_description():
         executable='run_bt.py',
         output='screen'
     )
+    action_tracking = LaunchNode(
+        package="aruco_tracking_action",
+        executable="aruco_tracking_action_server.py",
+        output="screen",
+    )
     ld = LaunchDescription()
 
     # Add the commands to the launch description
@@ -108,5 +113,6 @@ def generate_launch_description():
     ld.add_action(navigation_cmd)
     ld.add_action(aruco_node)
     ld.add_action(turtlebot_bt)
+    ld.add_action(action_tracking)
 
     return ld
